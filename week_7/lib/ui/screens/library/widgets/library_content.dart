@@ -10,6 +10,7 @@ class LibraryContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final songs = [...libraryViewModel.songs];
     return Container(
       color: libraryViewModel.background,
       child: Column(
@@ -22,14 +23,11 @@ class LibraryContent extends StatelessWidget {
 
           Expanded(
             child: ListView.builder(
-              itemCount: libraryViewModel.songs.length,
+              itemCount: songs.length,
               itemBuilder: (context, index) => SongTile(
-                song: libraryViewModel.songs[index],
-                isPlaying: libraryViewModel.isPlaying(
-                  libraryViewModel.songs[index],
-                ),
-                onTap: () =>
-                    libraryViewModel.playSong(libraryViewModel.songs[index]),
+                song: songs[index],
+                isPlaying: libraryViewModel.isPlaying(songs[index]),
+                onTap: () => libraryViewModel.playSong(songs[index]),
               ),
             ),
           ),

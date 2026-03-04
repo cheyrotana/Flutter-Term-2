@@ -6,15 +6,19 @@ import 'package:week_7/ui/states/settings_state.dart';
 
 class LibraryViewModel extends ChangeNotifier {
   final SongRepository _songRepository;
-  final AppSettingsState settingsState;
-  final PlayerState playerState;
+  final AppSettingsState _settingsState;
+  final PlayerState _playerState;
 
+  List<Song> _songs = [];
+  
   LibraryViewModel({
     required SongRepository songRepository,
-    required this.settingsState,
-    required this.playerState,
-  }) : _songRepository = songRepository {
-    playerState.addListener(_onPlayerChanged);
+    required AppSettingsState settingsState,
+    required PlayerState playerState,
+  })  : _songRepository = songRepository,
+        _settingsState = settingsState,
+        _playerState = playerState {
+    _playerState.addListener(_onPlayerChanged);
   }
 
   void _onPlayerChanged() {
@@ -23,19 +27,19 @@ class LibraryViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    playerState.removeListener(_onPlayerChanged);
+    _playerState.removeListener(_onPlayerChanged);
     super.dispose();
   }
 
-  List<Song> _songs = [];
+
   List<Song> get songs => _songs;
   Future<void> init() async {
     _songs = _songRepository.fetchSongs();
     notifyListeners();
   }
 
-  Song? get currentSong => playerState.currentSong;
-  Color get background => settingsState.theme.backgroundColor;
+  Song? get currentSong => _playerState.currentSong;
+  Color get background => _settingsState.theme.backgroundColor;
 
   bool isPlaying(Song song) {
     if (currentSong?.id != song.id) return false;
@@ -44,11 +48,9 @@ class LibraryViewModel extends ChangeNotifier {
 
   void playSong(Song song) {
     if (isPlaying(song)) {
-      playerState.start(song);
+      _playerState.stop();
+    } else {
+      _playerState.start(song);
     }
-  }
-
-  void stopSong(Song song) {
-    playerState.stop();
   }
 }
