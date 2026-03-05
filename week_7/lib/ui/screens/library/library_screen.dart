@@ -7,39 +7,18 @@ import '../../../data/repositories/songs/song_repository.dart';
 import '../../states/player_state.dart';
 import '../../states/settings_state.dart';
 
-class LibraryScreen extends StatefulWidget {
+class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
 
   @override
-  State<LibraryScreen> createState() => _LibraryScreenState();
-}
-
-class _LibraryScreenState extends State<LibraryScreen> {
-  late LibraryViewModel _libraryViewModel;
-
-  @override
-  void initState() {
-    super.initState();
-    _libraryViewModel = LibraryViewModel(
-      songRepository: context.read<SongRepository>(),
-      settingsState: context.read<AppSettingsState>(),
-      playerState: context.read<PlayerState>(),
-    );
-    _libraryViewModel.init();
-  }
-
-  @override
-  void dispose() {
-    _libraryViewModel.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: _libraryViewModel,
-      builder: (context, _) =>
-          LibraryContent(libraryViewModel: _libraryViewModel),
+    return ChangeNotifierProvider<LibraryViewModel>(
+      create: (context) => LibraryViewModel(
+        songRepository: context.read<SongRepository>(),
+        settingsState: context.read<AppSettingsState>(),
+        playerState: context.read<PlayerState>(),
+      )..init(),
+      child: const LibraryContent(),
     );
   }
 }

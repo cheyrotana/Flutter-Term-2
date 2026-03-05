@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:week_7/model/songs/song.dart';
 import 'package:week_7/ui/screens/library/view_model/library_view_model.dart';
 import 'package:week_7/ui/theme/theme.dart';
 
 class LibraryContent extends StatelessWidget {
-  const LibraryContent({super.key, required this.libraryViewModel});
-
-  final LibraryViewModel libraryViewModel;
+  const LibraryContent({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final libraryViewModel = context.watch<LibraryViewModel>();
     final songs = [...libraryViewModel.songs];
     return Container(
       color: libraryViewModel.background,
