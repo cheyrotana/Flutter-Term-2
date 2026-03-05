@@ -1,41 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:week_7/model/songs/song.dart';
 import 'package:week_7/ui/screens/home/view_model/home_view_model.dart';
 import 'package:week_7/ui/theme/theme.dart';
 
 class HomeContent extends StatelessWidget {
-  const HomeContent({super.key, required this.homeViewModel});
-
-  final HomeViewModel homeViewModel;
+  const HomeContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: Text('Recent Songs', style: AppTextStyles.body),
-        ),
-        ...homeViewModel.recentSongs.map(
-          (song) => SongTile(
-            song: song,
-            isPlaying: homeViewModel.isPlaying(song),
-            onTap: () => homeViewModel.playSong(song),
+    final homeViewModel = context.watch<HomeViewModel>();
+    return Container(
+      color: homeViewModel.background,
+      child: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text('Recent Songs', style: AppTextStyles.body),
           ),
-        ),
+          ...homeViewModel.recentSongs.map(
+            (song) => SongTile(
+              song: song,
+              isPlaying: homeViewModel.isPlaying(song),
+              onTap: () => homeViewModel.playSong(song),
+            ),
+          ),
 
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: Text('Recommended', style: AppTextStyles.body),
-        ),
-        ...homeViewModel.recommendedSongs.map(
-          (song) => SongTile(
-            song: song,
-            isPlaying: homeViewModel.isPlaying(song),
-            onTap: () => homeViewModel.playSong(song),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text('Recommended', style: AppTextStyles.body),
           ),
-        ),
-      ],
+          ...homeViewModel.recommendedSongs.map(
+            (song) => SongTile(
+              song: song,
+              isPlaying: homeViewModel.isPlaying(song),
+              onTap: () => homeViewModel.playSong(song),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
