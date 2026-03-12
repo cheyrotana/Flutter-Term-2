@@ -53,13 +53,13 @@ class SongRepositoryMock implements SongRepository {
     // - If not found : Throw an error with the message “no song found for id 25 in the database"
 
     try {
+      Song? song;
       await Future.delayed(Duration(seconds: 3), () {
-        _songs.where((s) => s.id == id).toList();
+        song = _songs.firstWhere((s) => s.id == id);
       });
+      return song;
     } catch (e) {
-      throw ('No song found for id 25 in the database.');
+      throw Exception('No song found for id $id in the database.');
     }
-
-    return null; // TO CHANGE !
   }
 }
