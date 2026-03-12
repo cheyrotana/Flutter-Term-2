@@ -33,12 +33,12 @@ class LibraryContent extends StatelessWidget {
 
               Expanded(
                 child: ListView.builder(
-                  itemCount: mv.songs.length,
+                  itemCount: asyncValue.data!.length,
                   itemBuilder: (context, index) => SongTile(
-                    song: mv.songs[index],
-                    isPlaying: mv.isSongPlaying(mv.songs[index]),
+                    song: asyncValue.data![index],
+                    isPlaying: mv.isSongPlaying(asyncValue.data![index]),
                     onTap: () {
-                      mv.start(mv.songs[index]);
+                      mv.start(asyncValue.data![index]);
                     },
                   ),
                 ),

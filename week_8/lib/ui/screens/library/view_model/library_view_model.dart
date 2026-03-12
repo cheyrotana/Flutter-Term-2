@@ -7,7 +7,6 @@ import '../../../../model/songs/song.dart';
 class LibraryViewModel extends ChangeNotifier {
   final SongRepository songRepository;
   final PlayerState playerState;
-  List<Song>? _songs;
 
   AsyncValue<List<Song>> _songsState = const AsyncValue.loading();
   AsyncValue<List<Song>> get songsState => _songsState;
@@ -18,8 +17,6 @@ class LibraryViewModel extends ChangeNotifier {
     // init
     _init();
   }
-
-  List<Song> get songs => _songs == null ? [] : _songs!;
 
   @override
   void dispose() {
@@ -33,8 +30,8 @@ class LibraryViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _songs = await songRepository.fetchSongs();
-      _songsState = AsyncValue.success(_songs);
+      final songs = await songRepository.fetchSongs();
+      _songsState = AsyncValue.success(songs);
     } catch (e) {
       _songsState = AsyncValue.error(e);
     }
