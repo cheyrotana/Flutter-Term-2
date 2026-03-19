@@ -4,9 +4,10 @@ import 'package:blabla/model/ride_pref/ride_pref.dart';
 class RidePreferenceRepositoryMock implements RidePreferenceRepository {
   static final List<RidePreference> _preferenceHistory = [];
   @override
-  Future<void> addPreferenceToHistory(RidePreference ridePreference) async {
+  Future<List<RidePreference>> addPreferenceToHistory(RidePreference ridePreference) async {
     try {
       _preferenceHistory.add(ridePreference);
+      return _preferenceHistory;
     } catch (e) {
       throw Exception('Failed To Save Ride Preference.');
     }
