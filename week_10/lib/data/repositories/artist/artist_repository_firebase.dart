@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
- 
+
 import '../../../model/artist/artist.dart';
 import '../../dtos/artist_dto.dart';
 import 'artist_repository.dart';
@@ -12,8 +12,14 @@ class ArtistRepositoryFirebase implements ArtistRepository {
     '/artists.json',
   );
 
+  List<Artist>? _cachedArtist;
+
   @override
-  Future<List<Artist>> fetchArtists() async {
+  Future<List<Artist>> fetchArtists({bool forceFetch = false}) async {
+    if (_cachedArtist != null && !forceFetch) {
+      return _cachedArtist!;
+    }
+
     final http.Response response = await http.get(artistsUri);
 
     if (response.statusCode == 200) {
@@ -24,7 +30,8 @@ class ArtistRepositoryFirebase implements ArtistRepository {
       for (final entry in songJson.entries) {
         result.add(ArtistDto.fromJson(entry.key, entry.value));
       }
-      return result;
+      _cachedArtist = result;
+      return _cachedArtist!;
     } else {
       // 2- Throw expcetion if any issue
       throw Exception('Failed to load posts');

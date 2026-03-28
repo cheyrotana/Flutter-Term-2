@@ -9,9 +9,14 @@ import 'song_repository.dart';
 class SongRepositoryFirebase extends SongRepository {
   final String baseUrl =
       'week-10-db-default-rtdb.asia-southeast1.firebasedatabase.app';
+  List<Song>? _cachedSongs;
 
   @override
-  Future<List<Song>> fetchSongs() async {
+  Future<List<Song>> fetchSongs({bool forceFetch = false}) async {
+    if (_cachedSongs != null && !forceFetch) {
+      return _cachedSongs!;
+    }
+
     final http.Response response = await http.get(
       Uri.https(baseUrl, '/songs.json'),
     );
@@ -24,7 +29,8 @@ class SongRepositoryFirebase extends SongRepository {
       for (final entry in songJson.entries) {
         result.add(SongDto.fromJson(entry.key, entry.value));
       }
-      return result;
+      _cachedSongs = result;
+      return _cachedSongs!;
     } else {
       // 2- Throw expcetion if any issue
       throw Exception('Failed to load posts');
@@ -62,6 +68,12 @@ class SongRepositoryFirebase extends SongRepository {
     final Song? updatedSong = await fetchSongById(id);
     if (updatedSong == null) {
       throw Exception('Song not found after liking');
+    }
+
+    if (_cachedSongs != null) {
+      _cachedSongs = [
+        for (final song in _cachedSongs!) song.id == id ? updatedSong : song,
+      ];
     }
 
     return updatedSong;

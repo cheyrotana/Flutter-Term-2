@@ -94,6 +94,10 @@ class LibraryViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> onRefresh() async {
+    await songRepository.fetchSongs(forceFetch: true);
+  }
+
   bool isSongPlaying(Song song) => playerState.currentSong == song;
 
   void start(Song song) => playerState.start(song);

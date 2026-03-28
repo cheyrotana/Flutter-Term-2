@@ -1,5 +1,7 @@
 import 'package:provider/provider.dart';
- 
+import 'package:week_9/ui/screens/artists/view_model/artists_view_model.dart';
+import 'package:week_9/ui/screens/library/view_model/library_view_model.dart';
+
 import 'data/repositories/artist/artist_repository.dart';
 import 'data/repositories/artist/artist_repository_firebase.dart';
 import 'data/repositories/songs/song_repository_firebase.dart';
@@ -14,17 +16,29 @@ List<InheritedProvider> get devProviders {
   final appSettingsRepository = AppSettingsRepositoryMock();
 
   return [
- 
     // 1 - Inject repositories
     Provider<SongRepository>(create: (_) => SongRepositoryFirebase()),
     Provider<ArtistRepository>(create: (_) => ArtistRepositoryFirebase()),
-    
+
     // 2 - Inject the player state
     ChangeNotifierProvider<PlayerState>(create: (_) => PlayerState()),
 
     // 3 - Inject the  app setting state
     ChangeNotifierProvider<AppSettingsState>(
       create: (_) => AppSettingsState(repository: appSettingsRepository),
+    ),
+    ChangeNotifierProvider<LibraryViewModel>(
+      create: (context) => LibraryViewModel(
+        songRepository: context.read<SongRepository>(),
+        artistRepository: context.read<ArtistRepository>(),
+        playerState: context.read<PlayerState>(),
+      ),
+    ),
+
+    ChangeNotifierProvider<ArtistsViewModel>(
+      create: (context) => ArtistsViewModel(
+        artistRepository: context.read<ArtistRepository>(),
+      ),
     ),
   ];
 }

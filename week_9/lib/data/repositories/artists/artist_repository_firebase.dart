@@ -36,21 +36,9 @@ class ArtistRepositoryFirebase extends ArtistRepository {
 
     final http.Response response = await http.get(artistByIdUri);
     if (response.statusCode == 200) {
-      final Artist artistJson = json.decode(response.body);
-      return ArtistDto.fromJson(
-        artistJson as Map<String, dynamic>,
-        id: artistJson.id,
-      );
+      return ArtistDto.fromJson(jsonDecode(response.body),id: jsonDecode(response.body));
     } else {
       throw Exception('Failed to load artist.');
     }
   }
 }
-
-
-    // if (response.statusCode == 200) {
-    //   Map<String, dynamic> artistJson = json.decode(response.body);
-    //   return ArtistDto.fromJson(artistJson, id: id);
-    // } else {
-    //   throw Exception('Failed to load artist.');
-    // }
