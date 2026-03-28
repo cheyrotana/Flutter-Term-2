@@ -7,14 +7,14 @@ import '../../dtos/song_dto.dart';
 import 'song_repository.dart';
 
 class SongRepositoryFirebase extends SongRepository {
-  final Uri songsUri = Uri.https(
-    'test-a2a77-default-rtdb.asia-southeast1.firebasedatabase.app',
-    '/songs.json',
-  );
+  final String baseUrl =
+      'week-10-db-default-rtdb.asia-southeast1.firebasedatabase.app';
 
   @override
   Future<List<Song>> fetchSongs() async {
-    final http.Response response = await http.get(songsUri);
+    final http.Response response = await http.get(
+      Uri.https(baseUrl, '/songs.json'),
+    );
 
     if (response.statusCode == 200) {
       // 1 - Send the retrieved list of songs
@@ -33,6 +33,37 @@ class SongRepositoryFirebase extends SongRepository {
 
   @override
   Future<Song?> fetchSongById(String id) async {
-    return null;
+    final http.Response response = await http.get(
+      Uri.https(baseUrl, '/songs/$id.json'),
+    );
+
+    if (response.statusCode == 200) {
+      return SongDto.fromJson(id, json.decode(response.body));
+    } else {
+      throw Exception('Failed to load song.');
+    }
+  }
+
+  @override
+  Future<Song> likeSong(String id) async {
+    final Uri songByIdUri = Uri.https(baseUrl, '/songs/$id.json');
+    final Song? songById = await fetchSongById(id);
+    if (songById == null) {
+      throw Exception('Song not found');
+    }
+    final int currentLike = songById.likes;
+
+    await http.patch(
+      songByIdUri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({SongDto.likesKey: currentLike + 1}),
+    );
+
+    final Song? updatedSong = await fetchSongById(id);
+    if (updatedSong == null) {
+      throw Exception('Song not found after liking');
+    }
+
+    return updatedSong;
   }
 }
