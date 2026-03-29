@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
- 
+import 'package:week_9/ui/screens/artists/artist_detail/artist_detail_screen.dart';
 import '../../../../model/artist/artist.dart';
 import '../../../theme/theme.dart';
 import '../../../utils/async_value.dart';
@@ -36,7 +36,18 @@ class ArtistsContent extends StatelessWidget {
           onRefresh: () => mv.onRefresh(),
           child: ListView.builder(
             itemCount: artists.length,
-            itemBuilder: (context, index) => ArtistTile(artist: artists[index]),
+            itemBuilder: (context, index) => ArtistTile(
+              artist: artists[index],
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ArtistDetailScreen(artist: artists[index]),
+                  ),
+                );
+              },
+            ),
           ),
         );
     }

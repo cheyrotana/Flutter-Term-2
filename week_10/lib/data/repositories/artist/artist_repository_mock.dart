@@ -1,4 +1,5 @@
 import '../../../model/artist/artist.dart';
+import '../../../model/comments/comment.dart';
 import 'artist_repository.dart';
 
 class ArtistRepositoryMock implements ArtistRepository {
@@ -19,5 +20,17 @@ class ArtistRepositoryMock implements ArtistRepository {
         orElse: () => throw Exception("No artist with id $id in the database"),
       );
     });
+  }
+
+  @override
+  Future<List<Comment>> fetchArtistComments(String artistId) {
+    // TODO: implement fetchArtistComments
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Comment> postComment(String artistId, String text) {
+    // TODO: implement postComment
+    throw UnimplementedError();
   }
 }
